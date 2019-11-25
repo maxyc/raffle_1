@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use common\services\EntityService;
+use common\services\RaffleService;
 use Yii;
 use common\models\UserEntities;
 use common\models\search\UserEntities as UserEntitiesSearch;
@@ -14,6 +16,16 @@ use yii\filters\VerbFilter;
  */
 class PostController extends Controller
 {
+
+    private $entityService;
+    private $user;
+
+    public function __construct($id, $module, EntityService $entityService, $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->entityService = $entityService;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -44,69 +56,20 @@ class PostController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single UserEntities model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
+    public function actionProcess($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $this->entityService->process($id);
+        $this->redirect(['index']);
     }
-
-    /**
-     * Creates a new UserEntities model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
+    public function actionArrive($id)
     {
-        $model = new UserEntities();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        $this->entityService->send($id);
+        $this->redirect(['index']);
     }
-
-    /**
-     * Updates an existing UserEntities model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
+    public function actionDeliver($id)
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Deletes an existing UserEntities model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $this->entityService->deliver($id);
+        $this->redirect(['index']);
     }
 
     /**

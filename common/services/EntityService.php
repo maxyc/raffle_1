@@ -51,6 +51,22 @@ class EntityService
         return true;
     }
 
+    public function process($id)
+    {
+        $userEntity = $this->getUserEntity($id);
+        $userEntity->updateAttributes(['status_delivery'=>UserEntities::STATUS_DELIVERY_PROCESS]);
+    }
+    public function send($id)
+    {
+        $userEntity = $this->getUserEntity($id);
+        $userEntity->updateAttributes(['status_delivery'=>UserEntities::STATUS_DELIVERY_ARRIVED]);
+    }
+    public function deliver($id)
+    {
+        $userEntity = $this->getUserEntity($id);
+        $userEntity->updateAttributes(['status_delivery'=>UserEntities::STATUS_DELIVERY_DELIVERED]);
+    }
+
     private function getUserEntity($id)
     {
         $userEntities = UserEntities::findOne($id);
@@ -61,4 +77,6 @@ class EntityService
 
         return $userEntities;
     }
+
+
 }
