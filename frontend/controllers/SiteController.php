@@ -1,25 +1,44 @@
 <?php
+
 namespace frontend\controllers;
 
-use frontend\models\ResendVerificationEmailForm;
-use frontend\models\VerifyEmailForm;
-use Yii;
-use yii\base\InvalidArgumentException;
-use yii\web\BadRequestHttpException;
-use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use common\models\LoginForm;
+use common\exceptions\EntityNotFoundException;
+use common\models\form\LoginForm;
+use common\models\User;
+use common\models\UserEntities;
+use common\services\EntityService;
+use common\services\RaffleService;
 use frontend\models\PasswordResetRequestForm;
+use frontend\models\ResendVerificationEmailForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
-use frontend\models\ContactForm;
+use frontend\models\VerifyEmailForm;
+use Yii;
+use yii\base\ErrorException;
+use yii\base\Exception;
+use yii\base\InvalidArgumentException;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 /**
  * Site controller
  */
 class SiteController extends Controller
 {
+    private $raffleService;
+    private $entityService;
+    private $user;
+
+    public function __construct($id, $module, RaffleService $raffleService, EntityService $entityService, $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->raffleService = $raffleService;
+        $this->entityService = $entityService;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -27,7 +46,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout', 'signup'],
                 'rules' => [
                     [
@@ -36,19 +55,56 @@ class SiteController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'raffle'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
             ],
         ];
+    }
+
+    public function actionRaffle()
+    {
+        try
+        {
+            $user = User::findOne( Yii::$app->user->getId() );
+            $this->raffleService->setUser($user);
+
+            return $this->render('raffle', [
+                'result'=>$this->raffleService->process()
+            ]);
+        }
+        catch (EntityNotFoundException $e)
+        {
+            return $this->render('raffle_error', [
+                'error'=>$e->getMessage()
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            print_r($e);
+        }
+
+        return 123;
+    }
+
+    public function actionDisapproveGift($id)
+    {
+        $this->entityService->disapprove($id);
+        return $this->render('disapprove-gift');
+    }
+
+    public function actionApproveGift($id)
+    {
+        $this->entityService->approve($id);
+        return $this->render('approve-gift');
     }
 
     /**
@@ -74,7 +130,14 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $userName = '';
+        if(!Yii::$app->user->isGuest)
+        {
+            $user = User::findOne( Yii::$app->user->getId() );
+            $userName = $user->username;
+        }
+
+        return $this->render('index', ['userName'=>$userName]);
     }
 
     /**
@@ -94,9 +157,12 @@ class SiteController extends Controller
         } else {
             $model->password = '';
 
-            return $this->render('login', [
-                'model' => $model,
-            ]);
+            return $this->render(
+                'login',
+                [
+                    'model' => $model,
+                ]
+            );
         }
     }
 
@@ -112,38 +178,6 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return mixed
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
-            } else {
-                Yii::$app->session->setFlash('error', 'There was an error sending your message.');
-            }
-
-            return $this->refresh();
-        } else {
-            return $this->render('contact', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return mixed
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
 
     /**
      * Signs user up.
@@ -154,13 +188,19 @@ class SiteController extends Controller
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            Yii::$app->session->setFlash(
+                'success',
+                'Thank you for registration. '
+            );
             return $this->goHome();
         }
 
-        return $this->render('signup', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'signup',
+            [
+                'model' => $model,
+            ]
+        );
     }
 
     /**
@@ -177,13 +217,19 @@ class SiteController extends Controller
 
                 return $this->goHome();
             } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
+                Yii::$app->session->setFlash(
+                    'error',
+                    'Sorry, we are unable to reset password for the provided email address.'
+                );
             }
         }
 
-        return $this->render('requestPasswordResetToken', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'requestPasswordResetToken',
+            [
+                'model' => $model,
+            ]
+        );
     }
 
     /**
@@ -207,17 +253,20 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        return $this->render('resetPassword', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'resetPassword',
+            [
+                'model' => $model,
+            ]
+        );
     }
 
     /**
      * Verify email address
      *
      * @param string $token
-     * @throws BadRequestHttpException
      * @return yii\web\Response
+     * @throws BadRequestHttpException
      */
     public function actionVerifyEmail($token)
     {
@@ -250,11 +299,17 @@ class SiteController extends Controller
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                 return $this->goHome();
             }
-            Yii::$app->session->setFlash('error', 'Sorry, we are unable to resend verification email for the provided email address.');
+            Yii::$app->session->setFlash(
+                'error',
+                'Sorry, we are unable to resend verification email for the provided email address.'
+            );
         }
 
-        return $this->render('resendVerificationEmail', [
-            'model' => $model
-        ]);
+        return $this->render(
+            'resendVerificationEmail',
+            [
+                'model' => $model
+            ]
+        );
     }
 }

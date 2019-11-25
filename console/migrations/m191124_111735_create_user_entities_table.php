@@ -19,8 +19,11 @@ class m191124_111735_create_user_entities_table extends Migration
         }
 
         $this->createTable('{{%user_entities}}', [
+            'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
             'entity_id' => $this->integer()->notNull(),
+            'status'=>$this->tinyInteger()->defaultValue(0)->notNull(),
+            'status_delivery'=>$this->tinyInteger()->defaultValue(0)->notNull(),
         ], $tableOptions);
 
         $this->createIndex('idx_user_entities_user_id', '{{%user_entities}}', 'user_id');
