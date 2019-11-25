@@ -2,14 +2,13 @@
 
 namespace backend\controllers;
 
-use common\services\EntityService;
-use common\services\RaffleService;
-use Yii;
-use common\models\UserEntities;
 use common\models\search\UserEntities as UserEntitiesSearch;
+use common\models\UserEntities;
+use common\services\EntityService;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * PostController implements the CRUD actions for UserEntities model.
@@ -50,10 +49,13 @@ class PostController extends Controller
         $searchModel = new UserEntitiesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        return $this->render(
+            'index',
+            [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]
+        );
     }
 
     public function actionProcess($id)
@@ -61,11 +63,13 @@ class PostController extends Controller
         $this->entityService->process($id);
         $this->redirect(['index']);
     }
+
     public function actionArrive($id)
     {
         $this->entityService->send($id);
         $this->redirect(['index']);
     }
+
     public function actionDeliver($id)
     {
         $this->entityService->deliver($id);

@@ -2,9 +2,9 @@
 
 namespace common\models\search;
 
+use common\models\UserEntities as UserEntitiesModel;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\UserEntities as UserEntitiesModel;
 
 /**
  * UserEntities represents the model behind the search form of `common\models\UserEntities`.
@@ -46,7 +46,7 @@ class UserEntities extends UserEntitiesModel
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+                'query' => $query,
         ]);
 
         $this->load($params);
@@ -58,13 +58,15 @@ class UserEntities extends UserEntitiesModel
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            'user_id' => $this->user_id,
-            'entity_id' => $this->entity_id,
-            'status' => $this->status,
-            'status_delivery' => $this->status_delivery,
-            'id' => $this->id,
-        ]);
+        $query->andFilterWhere(
+            [
+                'user_id' => $this->user_id,
+                'entity_id' => $this->entity_id,
+                'status' => $this->status,
+                'status_delivery' => $this->status_delivery,
+                'id' => $this->id,
+            ]
+        );
 
         return $dataProvider;
     }

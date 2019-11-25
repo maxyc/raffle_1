@@ -5,7 +5,6 @@ namespace frontend\controllers;
 use common\exceptions\EntityNotFoundException;
 use common\models\form\LoginForm;
 use common\models\User;
-use common\models\UserEntities;
 use common\services\EntityService;
 use common\services\RaffleService;
 use frontend\models\PasswordResetRequestForm;
@@ -14,14 +13,11 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
-use yii\base\ErrorException;
-use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 
 /**
  * Site controller

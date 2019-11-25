@@ -26,26 +26,34 @@ class UserEntities extends ActiveRecord
     const STATUS_DELIVERY_ARRIVED = 10;
     const STATUS_DELIVERY_DELIVERED = 20;
 
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return '{{%user_entities}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return UserEntitiesQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new UserEntitiesQuery(get_called_class());
+    }
+
+    public function getStatusText()
+    {
+        return static::getStatusesText()[$this->status];
+    }
+
     public static function getStatusesText()
     {
         return [
             static::STATUS_WAIT => 'Ожидание решения',
             static::STATUS_APPROVE => 'Принял',
             static::STATUS_DISAPPROVE => 'Отказался'
-        ];
-    }
-
-    public function getStatusText(){
-        return static::getStatusesText()[$this->status];
-    }
-
-    public static function getDeliveryStatusesText()
-    {
-        return [
-            static::STATUS_DELIVERY_WAIT => 'Ожидание отправки',
-            static::STATUS_DELIVERY_PROCESS => 'Подготовка к отправке',
-            static::STATUS_DELIVERY_ARRIVED => 'Отправлено',
-            static::STATUS_DELIVERY_DELIVERED => 'Доставлено',
         ];
     }
 
@@ -73,25 +81,19 @@ class UserEntities extends ActiveRecord
             && $this->status_delivery == static::STATUS_DELIVERY_DELIVERED;
     }
 
-    public function getStatusDeliveryText(){
+    public function getStatusDeliveryText()
+    {
         return static::getDeliveryStatusesText()[$this->status_delivery];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
+    public static function getDeliveryStatusesText()
     {
-        return '{{%user_entities}}';
-    }
-
-    /**
-     * {@inheritdoc}
-     * @return UserEntitiesQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new UserEntitiesQuery(get_called_class());
+        return [
+            static::STATUS_DELIVERY_WAIT => 'Ожидание отправки',
+            static::STATUS_DELIVERY_PROCESS => 'Подготовка к отправке',
+            static::STATUS_DELIVERY_ARRIVED => 'Отправлено',
+            static::STATUS_DELIVERY_DELIVERED => 'Доставлено',
+        ];
     }
 
     /**

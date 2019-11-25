@@ -217,11 +217,11 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserEntities()
     {
-        return $this->hasMany(UserEntities::class, ['entity_id'=>'id']);
+        return $this->hasMany(UserEntities::class, ['entity_id' => 'id']);
     }
 
     public function getEntities()
     {
-        return $this->hasMany(Entity::class, ['id'=>'user_id'])->via('userEntities');
+        return $this->hasMany(Entity::class, ['id' => 'user_id'])->via('userEntities');
     }
 }

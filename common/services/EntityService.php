@@ -1,8 +1,7 @@
 <?php
+
 namespace common\services;
 
-use common\models\Entity;
-use common\models\User;
 use common\models\UserEntities;
 use yii\base\ErrorException;
 
@@ -16,21 +15,29 @@ class EntityService
     public function disapprove($id)
     {
         $userEntity = $this->getUserEntity($id);
-        if(!$userEntity)
-        {
-            throw new ErrorException('User entity #'.$id.' not found');
+        if (!$userEntity) {
+            throw new ErrorException('User entity #' . $id . ' not found');
         }
 
-        if(!$userEntity->isWait())
-        {
+        if (!$userEntity->isWait()) {
             return true;
         }
 
         $userEntity->updateAttributes(['status' => UserEntities::STATUS_DISAPPROVE]);
 
-        $userEntity->entity->updateCounters(['in_stock'=>1]);
+        $userEntity->entity->updateCounters(['in_stock' => 1]);
 
         return true;
+    }
+
+    private function getUserEntity($id)
+    {
+        $userEntities = UserEntities::findOne($id);
+        if (!$userEntities) {
+            throw new ErrorException('User entity #' . $id . ' not found');
+        }
+
+        return $userEntities;
     }
 
     /**
@@ -42,8 +49,7 @@ class EntityService
     {
         $userEntity = $this->getUserEntity($id);
 
-        if(!$userEntity->isWait())
-        {
+        if (!$userEntity->isWait()) {
             return true;
         }
 
@@ -54,28 +60,19 @@ class EntityService
     public function process($id)
     {
         $userEntity = $this->getUserEntity($id);
-        $userEntity->updateAttributes(['status_delivery'=>UserEntities::STATUS_DELIVERY_PROCESS]);
+        $userEntity->updateAttributes(['status_delivery' => UserEntities::STATUS_DELIVERY_PROCESS]);
     }
+
     public function send($id)
     {
         $userEntity = $this->getUserEntity($id);
-        $userEntity->updateAttributes(['status_delivery'=>UserEntities::STATUS_DELIVERY_ARRIVED]);
+        $userEntity->updateAttributes(['status_delivery' => UserEntities::STATUS_DELIVERY_ARRIVED]);
     }
+
     public function deliver($id)
     {
         $userEntity = $this->getUserEntity($id);
-        $userEntity->updateAttributes(['status_delivery'=>UserEntities::STATUS_DELIVERY_DELIVERED]);
-    }
-
-    private function getUserEntity($id)
-    {
-        $userEntities = UserEntities::findOne($id);
-        if(!$userEntities)
-        {
-            throw new ErrorException('User entity #'.$id.' not found');
-        }
-
-        return $userEntities;
+        $userEntity->updateAttributes(['status_delivery' => UserEntities::STATUS_DELIVERY_DELIVERED]);
     }
 
 
