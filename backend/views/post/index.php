@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\search\UserEntities */
+/* @var $searchModel common\models\search\UserEntity */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'User Entities';

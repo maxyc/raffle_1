@@ -19,9 +19,11 @@ class m191124_111832_create_user_moneys_table extends Migration
         }
 
         $this->createTable('{{%user_moneys}}', [
+            'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
-            'money'=>$this->integer()->notNull(),
-            'status'=>$this->tinyInteger()->notNull()->defaultValue(0)
+            'money' => $this->integer()->notNull(),
+            'status' => $this->tinyInteger()->notNull()->defaultValue(0),
+            'status_delivery' => $this->tinyInteger()->notNull()->defaultValue(0),
         ], $tableOptions);
 
         $this->createIndex('idx_user_moneys_user_id', '{{%user_moneys}}', 'user_id');

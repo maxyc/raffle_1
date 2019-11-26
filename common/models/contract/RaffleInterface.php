@@ -1,8 +1,10 @@
 <?php
 
 
-namespace common\models;
+namespace common\models\contract;
 
+
+use common\models\User;
 
 interface RaffleInterface
 {

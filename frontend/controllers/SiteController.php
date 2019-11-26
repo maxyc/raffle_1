@@ -2,11 +2,10 @@
 
 namespace frontend\controllers;
 
-use common\exceptions\EntityNotFoundException;
 use common\models\form\LoginForm;
 use common\models\User;
-use common\services\EntityService;
 use common\services\RaffleService;
+use Exception;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\ResetPasswordForm;
@@ -25,14 +24,12 @@ use yii\web\Controller;
 class SiteController extends Controller
 {
     private $raffleService;
-    private $entityService;
     private $user;
 
-    public function __construct($id, $module, RaffleService $raffleService, EntityService $entityService, $config = [])
+    public function __construct($id, $module, RaffleService $raffleService, $config = [])
     {
         parent::__construct($id, $module, $config);
         $this->raffleService = $raffleService;
-        $this->entityService = $entityService;
     }
 
     /**
@@ -43,17 +40,17 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup'],
+                'only' => ['logout', 'signup', 'raffle'],
                 'rules' => [
-                    [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
                     [
                         'actions' => ['logout', 'raffle'],
                         'allow' => true,
                         'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['signup'],
+                        'allow' => true,
+                        'roles' => ['?'],
                     ],
                 ],
             ],
@@ -76,31 +73,18 @@ class SiteController extends Controller
             return $this->render('raffle', [
                 'result'=>$this->raffleService->process()
             ]);
-        }
-        catch (EntityNotFoundException $e)
-        {
-            return $this->render('raffle_error', [
-                'error'=>$e->getMessage()
-            ]);
-        }
-        catch (\Exception $e)
-        {
+        } catch (Exception $e) {
+            return $this->render(
+                'raffle_error',
+                [
+                    'error' => $e->getMessage()
+                ]
+            );
+        } catch (Exception $e) {
             print_r($e);
         }
 
         return 123;
-    }
-
-    public function actionDisapproveGift($id)
-    {
-        $this->entityService->disapprove($id);
-        return $this->render('disapprove-gift');
-    }
-
-    public function actionApproveGift($id)
-    {
-        $this->entityService->approve($id);
-        return $this->render('approve-gift');
     }
 
     /**

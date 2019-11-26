@@ -215,9 +215,20 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
+    public function getUserMoneys()
+    {
+        return $this->hasMany(UserMoney::class, ['user_id' => 'id']);
+    }
+
+    public function getMoneyBalance()
+    {
+        return (int)$this->getUserMoneys()->approved()->sum('money');
+    }
+
+
     public function getUserEntities()
     {
-        return $this->hasMany(UserEntities::class, ['entity_id' => 'id']);
+        return $this->hasMany(UserEntity::class, ['entity_id' => 'id']);
     }
 
     public function getEntities()

@@ -2,77 +2,54 @@
 
 namespace common\services;
 
-use common\models\UserEntities;
-use yii\base\ErrorException;
+use common\models\UserEntity;
 
 class EntityService
 {
     /**
-     * @param $id
+     * @param UserEntity $model
      * @return bool
-     * @throws ErrorException
      */
-    public function disapprove($id)
+    public function disapprove(UserEntity $model)
     {
-        $userEntity = $this->getUserEntity($id);
-        if (!$userEntity) {
-            throw new ErrorException('User entity #' . $id . ' not found');
-        }
-
-        if (!$userEntity->isWait()) {
+        if (!$model->isWait()) {
             return true;
         }
 
-        $userEntity->updateAttributes(['status' => UserEntities::STATUS_DISAPPROVE]);
-
-        $userEntity->entity->updateCounters(['in_stock' => 1]);
+        $model->updateAttributes(['status' => UserEntity::STATUS_DISAPPROVE]);
+        $model->entity->updateCounters(['in_stock' => 1]);
 
         return true;
     }
 
-    private function getUserEntity($id)
-    {
-        $userEntities = UserEntities::findOne($id);
-        if (!$userEntities) {
-            throw new ErrorException('User entity #' . $id . ' not found');
-        }
-
-        return $userEntities;
-    }
 
     /**
-     * @param $id
+     * @param UserEntity $model
      * @return bool
-     * @throws ErrorException
      */
-    public function approve($id)
+    public function approve(UserEntity $model)
     {
-        $userEntity = $this->getUserEntity($id);
-
-        if (!$userEntity->isWait()) {
+        if (!$model->isWait()) {
             return true;
         }
 
-        $userEntity->updateAttributes(['status' => UserEntities::STATUS_APPROVE]);
+        $model->updateAttributes(['status' => UserEntity::STATUS_APPROVE]);
         return true;
     }
 
-    public function process($id)
+    public function process(UserEntity $model)
     {
-        $userEntity = $this->getUserEntity($id);
-        $userEntity->updateAttributes(['status_delivery' => UserEntities::STATUS_DELIVERY_PROCESS]);
+        $model->updateAttributes(['status_delivery' => UserEntity::STATUS_DELIVERY_PROCESS]);
     }
 
-    public function send($id)
+    public function send(UserEntity $model)
     {
-        $userEntity = $this->getUserEntity($id);
-        $userEntity->updateAttributes(['status_delivery' => UserEntities::STATUS_DELIVERY_ARRIVED]);
+        $model->updateAttributes(['status_delivery' => UserEntity::STATUS_DELIVERY_ARRIVED]);
     }
 
-    public function deliver($id)
+    public function deliver(UserEntity $model)
     {
-        $userEntity = $this->getUserEntity($id);
-        $userEntity->updateAttributes(['status_delivery' => UserEntities::STATUS_DELIVERY_DELIVERED]);
+        $model->updateAttributes(['status_delivery' => UserEntity::STATUS_DELIVERY_DELIVERED]);
     }
 
 

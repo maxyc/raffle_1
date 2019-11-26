@@ -2,6 +2,7 @@
 
 namespace common\services;
 
+use common\exceptions\EntityNotFoundException;
 use common\models\BallsRaffle;
 use common\models\GiftRaffle;
 use common\models\MoneyRaffle;
@@ -23,7 +24,7 @@ class RaffleService
 
     /**
      * @throws ErrorException
-     * @throws \common\exceptions\EntityNotFoundException
+     * @throws EntityNotFoundException
      */
     public function process()
     {
@@ -31,17 +32,15 @@ class RaffleService
             static::TYPE_BALLS,
         ];
 
-        if(GiftRaffle::isAvailable())
-        {
-            $types[]=static::TYPE_GIFT;
+        if (GiftRaffle::isAvailable()) {
+            $types[] = static::TYPE_GIFT;
         }
 
-        if(MoneyRaffle::isAvailable())
-        {
-            $types[]=static::TYPE_MONEY;
+        if (MoneyRaffle::isAvailable()) {
+            $types[] = static::TYPE_MONEY;
         }
 
-        $raffleType = $types[rand(0, 2)];
+        $raffleType = static::TYPE_GIFT;//$types[rand(0, 2)];
 
         switch ($raffleType) {
             default:

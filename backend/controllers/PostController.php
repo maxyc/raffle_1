@@ -2,11 +2,11 @@
 
 namespace backend\controllers;
 
-use common\models\search\UserEntities as UserEntitiesSearch;
-use common\models\UserEntities;
+use common\models\search\UserEntity as UserEntitiesSearch;
+use common\models\UserEntity;
 use common\services\EntityService;
 use Yii;
-use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -19,10 +19,10 @@ class PostController extends Controller
     private $entityService;
     private $user;
 
-    public function __construct($id, $module, EntityService $entityService, $config = [])
+    public function __construct($id, $module, EntityService $service, $config = [])
     {
         parent::__construct($id, $module, $config);
-        $this->entityService = $entityService;
+        $this->entityService = $service;
     }
 
     /**
@@ -31,12 +31,15 @@ class PostController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
-            ],
+            ]
         ];
     }
 
@@ -58,21 +61,33 @@ class PostController extends Controller
         );
     }
 
+    /**
+     * @param $id
+     * @throws NotFoundHttpException
+     */
     public function actionProcess($id)
     {
-        $this->entityService->process($id);
+        $this->entityService->process($this->findModel($id));
         $this->redirect(['index']);
     }
 
+    /**
+     * @param $id
+     * @throws NotFoundHttpException
+     */
     public function actionArrive($id)
     {
-        $this->entityService->send($id);
+        $this->entityService->send($this->findModel($id));
         $this->redirect(['index']);
     }
 
+    /**
+     * @param $id
+     * @throws NotFoundHttpException
+     */
     public function actionDeliver($id)
     {
-        $this->entityService->deliver($id);
+        $this->entityService->deliver($this->findModel($id));
         $this->redirect(['index']);
     }
 
@@ -80,12 +95,12 @@ class PostController extends Controller
      * Finds the UserEntities model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return UserEntities the loaded model
+     * @return UserEntity the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = UserEntities::findOne($id)) !== null) {
+        if (($model = UserEntity::findOne($id)) !== null) {
             return $model;
         }
 

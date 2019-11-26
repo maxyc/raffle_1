@@ -3,18 +3,29 @@
 namespace common\models\query;
 
 use common\models\Option;
+use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[Option]].
  *
  * @see Option
  */
-class OptionQuery extends \yii\db\ActiveQuery
+class OptionQuery extends ActiveQuery
 {
-    /*public function active()
+    public function money()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere(['key' => 'money']);
+    }
+
+    public function percent()
+    {
+        return $this->andWhere(['key' => 'percent']);
+    }
+
+    public function coefficient()
+    {
+        return $this->andWhere(['key' => 'coefficient']);
+    }
 
     /**
      * {@inheritdoc}

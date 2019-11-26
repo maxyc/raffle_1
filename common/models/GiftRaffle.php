@@ -3,6 +3,7 @@
 namespace common\models;
 
 use common\exceptions\EntityNotFoundException;
+use common\models\contract\RaffleInterface;
 use yii\base\ErrorException;
 
 class GiftRaffle implements RaffleInterface
@@ -46,7 +47,7 @@ class GiftRaffle implements RaffleInterface
 
     protected static function offerToUser(Entity $entity, User $user)
     {
-        $userEntity = new UserEntities();
+        $userEntity = new UserEntity();
         $userEntity->entity_id = $entity->id;
         $userEntity->user_id = $user->id;
 

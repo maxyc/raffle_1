@@ -2,29 +2,29 @@
 
 namespace common\models\query;
 
-use common\models\UserEntities;
+use common\models\UserEntity;
 use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[UserEntities]].
  *
- * @see UserEntities
+ * @see UserEntity
  */
 class UserEntitiesQuery extends ActiveQuery
 {
     public function approved()
     {
-        return $this->andWhere(['status' => UserEntities::STATUS_APPROVE]);
+        return $this->andWhere(['status' => UserEntity::STATUS_APPROVE]);
     }
 
     public function notDelivered()
     {
-        return $this->andWhere(['!=', 'status_delivery', UserEntities::STATUS_DELIVERY_DELIVERED]);
+        return $this->andWhere(['!=', 'status_delivery', UserEntity::STATUS_DELIVERY_DELIVERED]);
     }
 
     /**
      * {@inheritdoc}
-     * @return UserEntities[]|array
+     * @return UserEntity[]|array
      */
     public function all($db = null)
     {
@@ -33,7 +33,7 @@ class UserEntitiesQuery extends ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return UserEntities|array|null
+     * @return UserEntity|array|null
      */
     public function one($db = null)
     {

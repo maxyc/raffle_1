@@ -2,14 +2,14 @@
 
 namespace common\models\search;
 
-use common\models\UserEntities as UserEntitiesModel;
+use common\models\UserEntity as UserEntitiesModel;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 /**
  * UserEntities represents the model behind the search form of `common\models\UserEntities`.
  */
-class UserEntities extends UserEntitiesModel
+class UserEntity extends UserEntitiesModel
 {
     /**
      * {@inheritdoc}

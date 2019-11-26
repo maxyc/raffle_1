@@ -17,12 +17,26 @@ class m191124_111757_create_option_table extends Migration
             // http://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
-        $this->createTable('{{%option}}', [
-            'key' => $this->string(50)->notNull(),
-            'value' => $this->string(50)->notNull(),
-        ], $tableOptions);
+        $this->createTable(
+            '{{%option}}',
+            [
+                'key' => $this->string(50)->notNull(),
+                'value' => $this->string(50)->notNull(),
+            ],
+            $tableOptions
+        );
 
-        $this->createIndex('idx_option_key', '{{%option}}', 'key');
+        $this->addPrimaryKey('pk_option_key', '{{%option}}', 'key');
+
+        $this->batchInsert(
+            '{{%option}}',
+            ['key', 'value'],
+            [
+                ['money', 9999],
+                ['percent', 30],
+                ['coefficient', 30]
+            ]
+        );
     }
 
     /**

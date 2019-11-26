@@ -1,10 +1,7 @@
 <?php
 namespace common\models;
 
-use common\models\Entity;
-use common\models\User;
-use common\models\UserEntities;
-use yii\db\Expression;
+use common\models\contract\RaffleInterface;
 
 class BallsRaffle implements RaffleInterface
 {

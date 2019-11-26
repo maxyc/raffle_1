@@ -15,7 +15,7 @@ use yii\db\ActiveRecord;
  * @property Entity $entity
  * @property User $user
  */
-class UserEntities extends ActiveRecord
+class UserEntity extends ActiveRecord
 {
     const STATUS_WAIT = 0;
     const STATUS_APPROVE = 5;
@@ -59,25 +59,30 @@ class UserEntities extends ActiveRecord
 
     public function isWaitDelivery()
     {
-        return $this->status == static::STATUS_APPROVE
+        return $this->isApproved()
             && $this->status_delivery == static::STATUS_DELIVERY_WAIT;
+    }
+
+    public function isApproved()
+    {
+        return $this->status == static::STATUS_APPROVE;
     }
 
     public function isProcessed()
     {
-        return $this->status == static::STATUS_APPROVE
+        return $this->isApproved()
             && $this->status_delivery == static::STATUS_DELIVERY_PROCESS;
     }
 
     public function isArrived()
     {
-        return $this->status == static::STATUS_APPROVE
+        return $this->isApproved()
             && $this->status_delivery == static::STATUS_DELIVERY_ARRIVED;
     }
 
     public function isDelivered()
     {
-        return $this->status == static::STATUS_APPROVE
+        return $this->isApproved()
             && $this->status_delivery == static::STATUS_DELIVERY_DELIVERED;
     }
 

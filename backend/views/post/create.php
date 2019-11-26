@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\UserEntities */
+/* @var $model common\models\UserEntity */
 
 $this->title = 'Create User Entities';
 $this->params['breadcrumbs'][] = ['label' => 'User Entities', 'url' => ['index']];

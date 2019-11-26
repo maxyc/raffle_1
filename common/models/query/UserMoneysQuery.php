@@ -2,23 +2,29 @@
 
 namespace common\models\query;
 
-use common\models\UserMoneys;
+use common\models\UserMoney;
+use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[UserMoneys]].
  *
- * @see UserMoneys
+ * @see UserMoney
  */
-class UserMoneysQuery extends \yii\db\ActiveQuery
+class UserMoneysQuery extends ActiveQuery
 {
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');
     }*/
 
+    public function approved()
+    {
+        return $this->andWhere(['status' => UserMoney::STATUS_APPROVE]);
+    }
+
     /**
      * {@inheritdoc}
-     * @return UserMoneys[]|array
+     * @return UserMoney[]|array
      */
     public function all($db = null)
     {
@@ -27,7 +33,7 @@ class UserMoneysQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return UserMoneys|array|null
+     * @return UserMoney|array|null
      */
     public function one($db = null)
     {
