@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Option;
 use common\models\User;
 use common\services\EntityService;
 use common\services\MoneyService;
@@ -58,12 +59,15 @@ class CabinetController extends Controller
         $userEntities = $user->getUserEntities()->orderBy(['status' => SORT_ASC])->all();
         $userMoneys = $user->getUserMoneys()->orderBy(['status' => SORT_ASC])->all();
 
+        $convertPercent = Option::find()->coefficient()->select(['value'])->scalar();
+
         return $this->render(
             'index',
             [
                 'user' => $user,
                 'userEntities' => $userEntities,
                 'userMoneys' => $userMoneys,
+                'convertPercent' => $convertPercent,
             ]
         );
     }

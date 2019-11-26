@@ -34,7 +34,8 @@ class m191124_111757_create_option_table extends Migration
             [
                 ['money', 9999],
                 ['percent', 30],
-                ['coefficient', 30]
+                ['coefficient', 30],
+                ['max_balls', 1000]
             ]
         );
     }

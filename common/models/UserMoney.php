@@ -77,7 +77,7 @@ class UserMoney extends ActiveRecord
                     self::STATUS_DELIVERY_WAIT,
                     self::STATUS_DELIVERY_PROCESS,
                     self::STATUS_DELIVERY_ARRIVED,
-                    self::STATUS_DELIVERY_ARRIVED
+                    self::STATUS_DELIVERY_DELIVERED
                 ]
             ],
         ];
@@ -119,7 +119,8 @@ class UserMoney extends ActiveRecord
         return [
             static::STATUS_WAIT => 'Ожидание решения',
             static::STATUS_APPROVE => 'Принял',
-            static::STATUS_DISAPPROVE => 'Отказался'
+            static::STATUS_DISAPPROVE => 'Отказался',
+            static::STATUS_CONVERTED => 'Конвертировал'
         ];
     }
 

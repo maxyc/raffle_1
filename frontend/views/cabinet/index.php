@@ -13,7 +13,14 @@
             <p class="lead">Монеты (Баланс: <?= $user->getMoneyBalance() ?>)</p>
 
             <?= $this->render('_money_list', ['list' => $userMoneys]); ?>
+
+            <p class="text-danger">
+                <small>* При конвертации монет в баллы вы получите <?= $convertPercent ?>% от суммы
+                    конвертации</small>
+            </p>
         </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <p class="lead">Баллы лояльности (Баланс: <?= $user->balls ?>)</p>
+        </div>
     </div>
 </div>

@@ -27,6 +27,11 @@ class OptionQuery extends ActiveQuery
         return $this->andWhere(['key' => 'coefficient']);
     }
 
+    public function balls()
+    {
+        return $this->andWhere(['key' => 'max_balls']);
+    }
+
     /**
      * {@inheritdoc}
      * @return Option[]|array

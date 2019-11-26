@@ -10,6 +10,7 @@ $statusesMap = [
     UserMoney::STATUS_WAIT => 'info',
     UserMoney::STATUS_APPROVE => 'success',
     UserMoney::STATUS_DISAPPROVE => 'danger',
+    UserMoney::STATUS_CONVERTED => 'warning',
 ];
 
 $statusesDeliveryMap = [

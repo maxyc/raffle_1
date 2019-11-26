@@ -2,16 +2,17 @@
 
 namespace frontend\controllers;
 
+use common\exceptions\EntityNotFoundException;
 use common\models\form\LoginForm;
 use common\models\User;
 use common\services\RaffleService;
-use Exception;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidArgumentException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -63,28 +64,22 @@ class SiteController extends Controller
         ];
     }
 
+    /**
+     * @return string
+     * @throws EntityNotFoundException
+     * @throws ErrorException
+     */
     public function actionRaffle()
     {
-        try
-        {
-            $user = User::findOne( Yii::$app->user->getId() );
-            $this->raffleService->setUser($user);
+        $user = User::findOne(Yii::$app->user->getId());
+        $this->raffleService->setUser($user);
 
-            return $this->render('raffle', [
-                'result'=>$this->raffleService->process()
-            ]);
-        } catch (Exception $e) {
-            return $this->render(
-                'raffle_error',
-                [
-                    'error' => $e->getMessage()
-                ]
-            );
-        } catch (Exception $e) {
-            print_r($e);
-        }
-
-        return 123;
+        return $this->render(
+            'raffle',
+            [
+                'result' => $this->raffleService->process()
+            ]
+        );
     }
 
     /**
@@ -111,8 +106,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $userName = '';
-        if(!Yii::$app->user->isGuest)
-        {
+        if(!Yii::$app->user->isGuest) {
             $user = User::findOne( Yii::$app->user->getId() );
             $userName = $user->username;
         }

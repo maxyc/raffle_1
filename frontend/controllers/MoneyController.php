@@ -88,8 +88,12 @@ class MoneyController extends Controller
     {
         $user = User::findOne(Yii::$app->user->getId());
         $percent = Option::find()->coefficient()->select(['value'])->scalar();
+        $model = $this->findModel($id);
 
-        $this->service->convert($percent, $this->findModel($id), $user);
-        return $this->render('convert');
+        $this->service->convert($percent, $model, $user);
+
+        $balls = ceil($model->money / 100) * $percent;
+
+        return $this->render('convert', ['balls' => $balls]);
     }
 }

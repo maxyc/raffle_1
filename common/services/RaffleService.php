@@ -40,7 +40,7 @@ class RaffleService
             $types[] = static::TYPE_MONEY;
         }
 
-        $raffleType = static::TYPE_GIFT;//$types[rand(0, 2)];
+        $raffleType = static::TYPE_BALLS;//$types[rand(0, 2)];
 
         switch ($raffleType) {
             default:
