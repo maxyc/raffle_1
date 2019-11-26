@@ -27,31 +27,31 @@ class RaffleService
      */
     public function process()
     {
-        $raffleType = static::TYPE_GIFT;//$this->getTypes()[rand(0, 2)];
+        $types = [
+            static::TYPE_BALLS,
+        ];
+
+        if(GiftRaffle::isAvailable())
+        {
+            $types[]=static::TYPE_GIFT;
+        }
+
+        if(MoneyRaffle::isAvailable())
+        {
+            $types[]=static::TYPE_MONEY;
+        }
+
+        $raffleType = $types[rand(0, 2)];
 
         switch ($raffleType) {
             default:
                 throw new ErrorException('Unknown raffle type');
                 break;
             case static::TYPE_GIFT:
-                if(GiftRaffle::isAvailable()) {
-                    $result = GiftRaffle::process($this->user);
-                }
-                else
-                {
-                    $raffleType = static::TYPE_BALLS;
-                    $result = BallsRaffle::process($this->user);
-                }
+                $result = GiftRaffle::process($this->user);
                 break;
             case static::TYPE_MONEY:
-                if(MoneyRaffle::isAvailable()) {
-                    $result = MoneyRaffle::process($this->user);
-                }
-                else
-                {
-                    $raffleType = static::TYPE_BALLS;
-                    $result = BallsRaffle::process($this->user);
-                }
+                $result = MoneyRaffle::process($this->user);
                 break;
             case static::TYPE_BALLS:
                 $result = BallsRaffle::process($this->user);
@@ -61,15 +61,4 @@ class RaffleService
         $result['type'] = $raffleType;
         return $result;
     }
-
-    protected function getTypes()
-    {
-        return [
-            static::TYPE_MONEY,
-            static::TYPE_BALLS,
-            static::TYPE_GIFT,
-        ];
-    }
-
-
 }
