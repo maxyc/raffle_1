@@ -10,16 +10,22 @@ use yii\db\ActiveQuery;
  *
  * @see UserMoney
  */
-class UserMoneysQuery extends ActiveQuery
+class UserMoneyQuery extends ActiveQuery
 {
-    /*public function active()
+
+    public function waitSend()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->approved()->andWhere(['status_delivery' => UserMoney::STATUS_WAIT]);
+    }
 
     public function approved()
     {
         return $this->andWhere(['status' => UserMoney::STATUS_APPROVE]);
+    }
+
+    public function arrived()
+    {
+        return $this->andWhere(['status_delivery' => UserMoney::STATUS_DELIVERY_ARRIVED]);
     }
 
     /**

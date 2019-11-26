@@ -2,6 +2,7 @@
 
 namespace common\services;
 
+use common\integrations\contract\BankIntegrationInterface;
 use common\models\Option;
 use common\models\User;
 use common\models\UserMoney;
@@ -20,7 +21,7 @@ class MoneyService
             return true;
         }
 
-        $model->updateAttributes(['status' => UserMoney::STATUS_DISAPPROVE]);
+        $model->setDisapprovedStatus();
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -45,12 +46,12 @@ class MoneyService
             return true;
         }
 
-        $model->updateAttributes(['status' => UserMoney::STATUS_APPROVE]);
-
+        $model->setApproveedStatus();
         return true;
     }
 
     /**
+     * @param int $convertProcent
      * @param UserMoney $model
      * @param User $user
      * @return bool
@@ -61,29 +62,37 @@ class MoneyService
             return false;
         }
 
-        $summ = ceil($model->money / 100) * $convertProcent;
+        $balls = ceil($model->money / 100) * $convertProcent;
 
-        $user->updateCounters(['balls' => $summ]);
-        $model->updateAttributes(['status' => UserMoney::STATUS_CONVERTED]);
+        $user->addBalls($balls);
+        $model->setConvertedStatus();
 
         return true;
     }
 
-//    public function process($id)
-//    {
-//        $userEntity = $this->getUserMoney($id);
-//        $userEntity->updateAttributes(['status_delivery' => UserMoney::STATUS_DELIVERY_PROCESS]);
-//    }
-//
-//    public function send($id)
-//    {
-//        $userEntity = $this->getUserMoney($id);
-//        $userEntity->updateAttributes(['status_delivery' => UserMoney::STATUS_DELIVERY_ARRIVED]);
-//    }
-//
-//    public function deliver($id)
-//    {
-//        $userEntity = $this->getUserMoney($id);
-//        $userEntity->updateAttributes(['status_delivery' => UserMoney::STATUS_DELIVERY_DELIVERED]);
-//    }
+    /**
+     * @param UserMoney $model
+     * @param BankIntegrationInterface $bank
+     */
+    public function send(UserMoney $model, BankIntegrationInterface $bank)
+    {
+        $model->setProcessedStatus();
+
+        if ($bank->send()) // не вдаюсь в подробности апи банка, это уже другая задача
+        {
+            $model->setArrivedStatus();
+        }
+    }
+
+    /**
+     * @param UserMoney $model
+     * @param BankIntegrationInterface $bank
+     */
+    public function check(UserMoney $model, BankIntegrationInterface $bank)
+    {
+        if ($bank->check()) // не вдаюсь в подробности апи банка, это уже другая задача
+        {
+            $model->setDeliveredStatus();
+        }
+    }
 }

@@ -215,16 +215,15 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    public function getUserMoneys()
-    {
-        return $this->hasMany(UserMoney::class, ['user_id' => 'id']);
-    }
-
     public function getMoneyBalance()
     {
         return (int)$this->getUserMoneys()->approved()->sum('money');
     }
 
+    public function getUserMoneys()
+    {
+        return $this->hasMany(UserMoney::class, ['user_id' => 'id']);
+    }
 
     public function getUserEntities()
     {
@@ -234,5 +233,13 @@ class User extends ActiveRecord implements IdentityInterface
     public function getEntities()
     {
         return $this->hasMany(Entity::class, ['id' => 'user_id'])->via('userEntities');
+    }
+
+    /**
+     * @param $count
+     */
+    public function addBalls($count)
+    {
+        $this->updateCounters(['balls' => $count]);
     }
 }

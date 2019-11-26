@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\integrations\FakePostBankImplementation;
 use common\models\search\UserEntity as UserEntitiesSearch;
 use common\models\UserEntity;
 use common\services\EntityService;
@@ -16,13 +17,13 @@ use yii\web\NotFoundHttpException;
 class PostController extends Controller
 {
 
-    private $entityService;
+    private $service;
     private $user;
 
     public function __construct($id, $module, EntityService $service, $config = [])
     {
         parent::__construct($id, $module, $config);
-        $this->entityService = $service;
+        $this->service = $service;
     }
 
     /**
@@ -67,7 +68,7 @@ class PostController extends Controller
      */
     public function actionProcess($id)
     {
-        $this->entityService->process($this->findModel($id));
+        $this->service->process($this->findModel($id));
         $this->redirect(['index']);
     }
 
@@ -77,7 +78,7 @@ class PostController extends Controller
      */
     public function actionArrive($id)
     {
-        $this->entityService->send($this->findModel($id));
+        $this->service->send($this->findModel($id), new FakePostBankImplementation());
         $this->redirect(['index']);
     }
 
@@ -87,7 +88,7 @@ class PostController extends Controller
      */
     public function actionDeliver($id)
     {
-        $this->entityService->deliver($this->findModel($id));
+        $this->service->check($this->findModel($id), new FakePostBankImplementation());
         $this->redirect(['index']);
     }
 

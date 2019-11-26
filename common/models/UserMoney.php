@@ -2,7 +2,7 @@
 
 namespace common\models;
 
-use common\models\query\UserMoneysQuery;
+use common\models\query\UserMoneyQuery;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -38,11 +38,11 @@ class UserMoney extends ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return UserMoneysQuery the active query used by this AR class.
+     * @return UserMoneyQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new UserMoneysQuery(get_called_class());
+        return new UserMoneyQuery(get_called_class());
     }
 
     /**
@@ -122,6 +122,36 @@ class UserMoney extends ActiveRecord
             static::STATUS_DISAPPROVE => 'Отказался',
             static::STATUS_CONVERTED => 'Конвертировал'
         ];
+    }
+
+    public function setProcessedStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_DELIVERY_PROCESS]);
+    }
+
+    public function setArrivedStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_DELIVERY_ARRIVED]);
+    }
+
+    public function setDeliveredStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_DELIVERY_DELIVERED]);
+    }
+
+    public function setConvertedStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_CONVERTED]);
+    }
+
+    public function setDisapprovedStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_DISAPPROVE]);
+    }
+
+    public function setApproveedStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_APPROVE]);
     }
 
     public function isWaitDelivery()

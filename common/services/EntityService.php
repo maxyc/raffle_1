@@ -2,6 +2,7 @@
 
 namespace common\services;
 
+use common\integrations\contract\PostIntegrationInterface;
 use common\models\UserEntity;
 
 class EntityService
@@ -13,11 +14,11 @@ class EntityService
     public function disapprove(UserEntity $model)
     {
         if (!$model->isWait()) {
-            return true;
+            return false;
         }
 
-        $model->updateAttributes(['status' => UserEntity::STATUS_DISAPPROVE]);
-        $model->entity->updateCounters(['in_stock' => 1]);
+        $model->setDisapprovedStatus();
+        $model->entity->increment();
 
         return true;
     }
@@ -30,27 +31,50 @@ class EntityService
     public function approve(UserEntity $model)
     {
         if (!$model->isWait()) {
-            return true;
+            return false;
         }
 
-        $model->updateAttributes(['status' => UserEntity::STATUS_APPROVE]);
+        $model->setApproveedStatus();
         return true;
     }
 
+    /**
+     * @param UserEntity $model
+     * @return bool
+     */
     public function process(UserEntity $model)
     {
-        $model->updateAttributes(['status_delivery' => UserEntity::STATUS_DELIVERY_PROCESS]);
+        $model->setProcessedStatus();
+        return true;
     }
 
-    public function send(UserEntity $model)
+    /**
+     * @param UserEntity $model
+     * @param PostIntegrationInterface $post
+     * @return bool
+     */
+    public function send(UserEntity $model, PostIntegrationInterface $post)
     {
-        $model->updateAttributes(['status_delivery' => UserEntity::STATUS_DELIVERY_ARRIVED]);
+        if ($post->send()) {
+            $model->setArrivedStatus();
+            return true;
+        }
+
+        return false;
     }
 
-    public function deliver(UserEntity $model)
+    /**
+     * @param UserEntity $model
+     * @param PostIntegrationInterface $post
+     * @return bool
+     */
+    public function check(UserEntity $model, PostIntegrationInterface $post)
     {
-        $model->updateAttributes(['status_delivery' => UserEntity::STATUS_DELIVERY_DELIVERED]);
+        if ($post->check()) {
+            $model->setDeliveredStatus();
+            return true;
+        }
+
+        return false;
     }
-
-
 }

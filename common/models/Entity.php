@@ -18,8 +18,6 @@ use yii\db\ActiveRecord;
  */
 class Entity extends ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -67,6 +65,22 @@ class Entity extends ActiveRecord
      */
     public function getUserEntities()
     {
-        return $this->hasMany(UserEntity::className(), ['entity_id' => 'id']);
+        return $this->hasMany(UserEntity::class, ['entity_id' => 'id']);
+    }
+
+    /**
+     * @return bool
+     */
+    public function increment()
+    {
+        return $this->updateCounters(['in_stock' => 1]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function decrement()
+    {
+        return $this->updateCounters(['in_stock' => -1]);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace common\services;
 
-use common\exceptions\EntityNotFoundException;
 use common\models\BallsRaffle;
 use common\models\GiftRaffle;
 use common\models\MoneyRaffle;
@@ -24,7 +23,6 @@ class RaffleService
 
     /**
      * @throws ErrorException
-     * @throws EntityNotFoundException
      */
     public function process()
     {

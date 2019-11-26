@@ -57,6 +57,31 @@ class UserEntity extends ActiveRecord
         ];
     }
 
+    public function setProcessedStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_DELIVERY_PROCESS]);
+    }
+
+    public function setArrivedStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_DELIVERY_ARRIVED]);
+    }
+
+    public function setDeliveredStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_DELIVERY_DELIVERED]);
+    }
+
+    public function setDisapprovedStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_DISAPPROVE]);
+    }
+
+    public function setApproveedStatus()
+    {
+        $this->updateAttributes(['status_delivery' => UserMoney::STATUS_APPROVE]);
+    }
+
     public function isWaitDelivery()
     {
         return $this->isApproved()

@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use common\exceptions\EntityNotFoundException;
 use common\models\contract\RaffleInterface;
 use yii\base\ErrorException;
 
@@ -20,13 +19,12 @@ class GiftRaffle implements RaffleInterface
      * @param User $user
      * @return array
      * @throws ErrorException
-     * @throws EntityNotFoundException
      */
     public static function process(User $user): array
     {
         $availableEntities = Entity::find()->available()->select('id')->column();
         if (!$availableEntities) {
-            throw new EntityNotFoundException('Available entities not found');
+            throw new ErrorException('Available entities not found');
         }
 
         $randKey = array_rand($availableEntities);
@@ -37,7 +35,7 @@ class GiftRaffle implements RaffleInterface
         if (!$userEntity) {
             throw new ErrorException('Error offer entity to user');
         } else {
-            $entity->updateCounters(['in_stock' => -1]);
+            $entity->decrement();
         }
 
         return [
