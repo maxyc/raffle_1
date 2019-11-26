@@ -1,60 +1,50 @@
-<p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
-    </a>
-    <h1 align="center">Yii 2 Advanced Project Template</h1>
-    <br>
-</p>
+**Задание:**
 
-Yii 2 Advanced Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
-developing complex Web applications with multiple tiers.
+Нужно разработать веб-приложение для розыгрыша призов. После аутентификации пользователь 
+может нажать на кнопку и получить случайный приз. Призы бывают 3х типов: денежный (случайная 
+сумма в интервале), бонусные баллы (случайная сумма в интервале), физический предмет 
+(случайный предмет из списка).
 
-The template includes three tiers: front end, back end, and console, each of which
-is a separate Yii application.
+Денежный приз может быть перечислен на счет пользователя в банке (HTTP запрос к API банка), 
+баллы зачислены на счет лояльности в приложении, предмет отправлен по почте (вручную 
+работником). Денежный приз может конвертироваться в баллы лояльности с учетом коэффициента. 
+От приза можно отказаться. Деньги и предметы ограничены, баллы лояльности нет.
 
-The template is designed to work in a team development environment. It supports
-deploying the application in different environments.
+**Комментарии к реализации: **
 
-Documentation is at [docs/guide/README.md](docs/guide/README.md).
+• Не нужно реализовывать все, достаточно потратить максимум 2 часа и отобразить прогресс 
+в git репозитории. Нам важно понять, как вы думаете.
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![Build Status](https://travis-ci.org/yiisoft/yii2-app-advanced.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-app-advanced)
+• Готовое задание нужно отправить ссылкой на репозиторий.
 
-DIRECTORY STRUCTURE
--------------------
+• В данном задании оценивается не внешний вид приложения, а сам код, в связи с чем 
+необходимо ориентироваться на code review, а не визуальную и функциональную оценку 
+приложения
 
-```
-common
-    config/              contains shared configurations
-    mail/                contains view files for e-mails
-    models/              contains model classes used in both backend and frontend
-    tests/               contains tests for common classes    
-console
-    config/              contains console configurations
-    controllers/         contains console controllers (commands)
-    migrations/          contains database migrations
-    models/              contains console-specific model classes
-    runtime/             contains files generated during runtime
-backend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains backend configurations
-    controllers/         contains Web controller classes
-    models/              contains backend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for backend application    
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-frontend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains frontend configurations
-    controllers/         contains Web controller classes
-    models/              contains frontend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for frontend application
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-    widgets/             contains frontend widgets
-vendor/                  contains dependent 3rd-party packages
-environments/            contains environment-based overrides
-```
+• Если вы претендуете на позию middle senior разработчика подготовьте решение - advanced -
+
+• Срок выполнения задания +2 суток от момента получения. Если Вам нужно больше времени. 
+Обратитесь к рекрутеру
+
+**Решений 2:**
+
+*- minimal-*
+
+• Нужно предоставить прототип в PHP 5.6+ без использования фреймворков / или с ними, но 
+можно использовать любые библиотеки. Где хранить данные - на ваше усмотрение.
+
+• Нужно добавить консольную команду которая будет отправлять денежные призы на счета 
+пользователей, которые еще не были отправлены пачками по N штук.
+
+*-advanced-*
+
+• Реализация с помощью фреймворка (можно любой, но лучше Yii или Yii2), использованием 
+БД.
+
+• Нужно добавить консольную команду которая будет отправлять денежные призы на счета 
+пользователей, которые еще не были отправлены пачками по N штук.
+
+• Добавить юнит-тест конвертирования денежного приза в баллы лояльности
+
+
+**Желаем Вам удачи!**
